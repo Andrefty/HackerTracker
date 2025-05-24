@@ -30,13 +30,8 @@ public class StepCounterActivity extends AppCompatActivity {
 
     private static final int SENSOR_PERMISSION_CODE = 1;
 
-    private SensorManager sensorManager;
-    private Sensor stepCounterSensor;
-    private StepCountListener stepCountListener;
     private TextView stepCountTextView;
-    private boolean isSensorRunning = false;
 
-    private int initialSteps = 0;
     private int stepCount = 0;
 
     BroadcastReceiver stepReceiver;
@@ -48,8 +43,6 @@ public class StepCounterActivity extends AppCompatActivity {
 
         stepCountTextView = findViewById(R.id.stepCount);
 
-        stepCountListener = new StepCountListener(getApplicationContext());
-
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACTIVITY_RECOGNITION)
                 != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -57,7 +50,7 @@ public class StepCounterActivity extends AppCompatActivity {
                         new String[]{Manifest.permission.ACTIVITY_RECOGNITION}, SENSOR_PERMISSION_CODE);
             }
         } else {
-            initializeSensors();
+            startSensorService();
         }
 
         stepReceiver = new BroadcastReceiver() {
@@ -71,7 +64,11 @@ public class StepCounterActivity extends AppCompatActivity {
                 }
                 SharedPreferences prefs = context.getApplicationContext().getSharedPreferences("step_prefs", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = prefs.edit();
-                editor.putInt("step_count", prefs.getInt("step_count", 0) + steps);
+                if (steps < 0) {
+                    editor.putInt("step_count", 0);
+                } else {
+                    editor.putInt("step_count", prefs.getInt("step_count", 0) + steps);
+                }
                 editor.apply();
             }
         };
@@ -92,11 +89,6 @@ public class StepCounterActivity extends AppCompatActivity {
         } else {
             registerReceiver(stepReceiver, intentFilter);
         }
-
-        if (stepCounterSensor != null) {
-            sensorManager.registerListener(stepCountListener, stepCounterSensor, SensorManager.SENSOR_DELAY_UI);
-            isSensorRunning = true;
-        }
     }
 
     @Override
@@ -104,21 +96,11 @@ public class StepCounterActivity extends AppCompatActivity {
         super.onPause();
 
         unregisterReceiver(stepReceiver);
-
-        if (isSensorRunning) {
-            sensorManager.unregisterListener(stepCountListener, stepCounterSensor);
-            isSensorRunning = false;
-        }
     }
 
-    private void initializeSensors() {
-        sensorManager = (SensorManager) getSystemService(SENSOR_SERVICE);
-        if (sensorManager != null) {
-            stepCounterSensor = sensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-        }
-        if (stepCounterSensor == null) {
-            Toast.makeText(this, "Step counting sensor is not available", Toast.LENGTH_SHORT).show();
-        }
+    private void startSensorService() {
+        Intent stepServiceIntent = new Intent(this, StepCounterService.class);
+        startService(stepServiceIntent);
     }
 
     @Override
@@ -126,7 +108,7 @@ public class StepCounterActivity extends AppCompatActivity {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == SENSOR_PERMISSION_CODE) {
             if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                initializeSensors();
+                startSensorService();
             } else {
                 Toast.makeText(this, "Permission denied, step counting will not work", Toast.LENGTH_SHORT).show();
             }
@@ -134,19 +116,19 @@ public class StepCounterActivity extends AppCompatActivity {
     }
 
     public void setSteps(int steps) {
+        stepCount = steps;
         if (stepCountTextView != null) {
             // Update step count and progress
             stepCountTextView.setText(String.valueOf(stepCount));
         }
-        stepCount = steps;
     }
 
     public void updateSteps(int increment) {
+        stepCount += increment;
         if (stepCountTextView != null) {
             // Update step count and progress
             stepCountTextView.setText(String.valueOf(stepCount));
         }
-        stepCount += increment;
     }
 
     public void clearSteps() {

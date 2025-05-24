@@ -1,6 +1,8 @@
 package com.sdm3.hackertracker;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.PersistableBundle;
 import android.widget.Button;
@@ -20,9 +22,12 @@ public class AdminPanelActivity extends AppCompatActivity {
         Button btnAccessPremium = findViewById(R.id.accessPremiumButton);
 
         btnResetSteps.setOnClickListener(v -> {
-            Intent updateIntent = new Intent("com.sdm3.hackertracker.intent.UPDATE_STEPS");
-            updateIntent.putExtra("stepsIncrement", -1);
-            getApplicationContext().sendBroadcast(updateIntent);
+            SharedPreferences prefs = getApplicationContext().getSharedPreferences("step_prefs", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = prefs.edit();
+            editor.putInt("step_count", 0);
+            editor.apply();
+
+            Toast.makeText(this, "Step count was reset", Toast.LENGTH_SHORT).show();
         });
 
         btnAccessPremium.setOnClickListener(v ->

@@ -26,6 +26,10 @@
             </intent-filter>
         </activity>
 
+        <service
+            android:name=".StepCounterService"
+            android:exported="false" />
+
         <activity
             android:name=".StepCounterActivity" />
 
