@@ -16,13 +16,5 @@
         android:layout_height="wrap_content"
         android:text="Access Premium Features"
         android:layout_marginTop="16dp" />
-
-    <Button
-        android:id="@+id/toggleExperimentalButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Toggle Experimental Feature X"
-        android:layout_marginTop="16dp"
-        android:visibility="gone" />
 </LinearLayout>
 

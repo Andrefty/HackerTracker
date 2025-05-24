@@ -2,6 +2,5 @@
     <string name="app_name">HackerTracker</string>
     <string name="premium_unlocked">Premium features unlocked!</string>
     <string name="premium_locked">Premium features are locked. Enable via system property.</string>
-    <string name="experimental_feature_x_active">Experimental Feature X is active!</string>
 </resources>
 

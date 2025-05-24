@@ -24,6 +24,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import java.lang.reflect.Method;
+
 import kotlin.Suppress;
 
 public class StepCounterActivity extends AppCompatActivity {
@@ -89,6 +91,15 @@ public class StepCounterActivity extends AppCompatActivity {
         } else {
             registerReceiver(stepReceiver, intentFilter);
         }
+
+      TextView premiumTextView = findViewById(R.id.checkPremiumTextView);
+        if (premiumTextView != null) {
+            if (isPremiumEnabled()) {
+                premiumTextView.setText("You are a premium user!");
+            } else {
+                premiumTextView.setText("");
+            }
+        }
     }
 
     @Override
@@ -136,6 +147,17 @@ public class StepCounterActivity extends AppCompatActivity {
         if (stepCountTextView != null) {
             // Update step count and progress
             stepCountTextView.setText(String.valueOf(stepCount));
+        }
+    }
+    private boolean isPremiumEnabled() {
+        try {
+            Class<?> systemProperties = Class.forName("android.os.SystemProperties");
+            Method get = systemProperties.getMethod("get", String.class, String.class);
+            String enabled = (String) get.invoke(null, "hackertracker.premium.enabled", "false");
+            return "true".equalsIgnoreCase(enabled);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

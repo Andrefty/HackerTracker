@@ -21,7 +21,6 @@ public class AdminPanelActivity extends AppCompatActivity {
 
         Button btnResetSteps = findViewById(R.id.resetStepsButton);
         Button btnAccessPremium = findViewById(R.id.accessPremiumButton);
-        Button btnToggleExperimental = findViewById(R.id.toggleExperimentalButton);
 
         btnResetSteps.setOnClickListener(v -> {
             SharedPreferences prefs = getApplicationContext().getSharedPreferences("step_prefs", Context.MODE_PRIVATE);
@@ -39,14 +38,6 @@ public class AdminPanelActivity extends AppCompatActivity {
                 Toast.makeText(this, R.string.premium_locked, Toast.LENGTH_SHORT).show();
             }
         });
-
-        if (isExperimentalFeatureXEnabled()) {
-            btnToggleExperimental.setVisibility(View.VISIBLE);
-            btnToggleExperimental.setOnClickListener(v ->
-                    Toast.makeText(this, R.string.experimental_feature_x_active, Toast.LENGTH_SHORT).show());
-        } else {
-            btnToggleExperimental.setVisibility(View.GONE);
-        }
     }
 
     private boolean isPremiumEnabled() {
@@ -54,18 +45,6 @@ public class AdminPanelActivity extends AppCompatActivity {
             Class<?> systemProperties = Class.forName("android.os.SystemProperties");
             Method get = systemProperties.getMethod("get", String.class, String.class);
             String enabled = (String) get.invoke(null, "hackertracker.premium.enabled", "false");
-            return "true".equalsIgnoreCase(enabled);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-    }
-
-    private boolean isExperimentalFeatureXEnabled() {
-        try {
-            Class<?> systemProperties = Class.forName("android.os.SystemProperties");
-            Method get = systemProperties.getMethod("get", String.class, String.class);
-            String enabled = (String) get.invoke(null, "hackertracker.exp.featureX", "false");
             return "true".equalsIgnoreCase(enabled);
         } catch (Exception e) {
             e.printStackTrace();
