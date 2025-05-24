@@ -3,6 +3,7 @@ package com.sdm3.hackertracker;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -20,8 +21,8 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState, @Nullable PersistableBundle persistentState) {
-        super.onCreate(savedInstanceState, persistentState);
+    protected void onCreate(@Nullable Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
         usernameInput = findViewById(R.id.usernameEditText);
@@ -34,10 +35,11 @@ public class LoginActivity extends AppCompatActivity {
 
             if (isAdmin(username, password)) {
                 Toast.makeText(LoginActivity.this, "Welcome Admin!", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(LoginActivity.this, MainActivity.class);
+                Intent intent = new Intent(LoginActivity.this, AdminPanelActivity.class);
                 startActivity(intent);
             } else {
-                Toast.makeText(LoginActivity.this, "Invalid credentials", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(LoginActivity.this, StepCounterActivity.class);
+                startActivity(intent);
             }
         });
     }
