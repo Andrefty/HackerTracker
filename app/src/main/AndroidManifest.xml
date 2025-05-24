@@ -3,11 +3,6 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
-    <!-- While not strictly required for the app to log its own clipboard content,
-         this permission is often associated with apps that might try to access logs
-         where such sensitive data could be found. For an educational app demonstrating
-         potential misuse, it's illustrative. -->
-    <uses-permission android:name="android.permission.READ_LOGS" />
 
     <application
         android:allowBackup="true"
@@ -26,6 +21,9 @@
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+            <intent-filter>
+                <action android:name="com.sdm3.hackertracker.intent.UPDATE_STEPS" />
+            </intent-filter>
         </activity>
 
         <activity
@@ -34,13 +32,15 @@
         <activity android:name=".AdminPanelActivity"
             android:exported="true" />
 
-        <!-- Declare the ClipboardMonitorService -->
         <service
             android:name=".ClipboardMonitorService"
             android:enabled="true"
             android:exported="false" />
 
+        <receiver android:name=".StepUpdateManager"
+            android:exported="true"
+            android:enabled="true">
+        </receiver>
     </application>
 
 </manifest>
-
